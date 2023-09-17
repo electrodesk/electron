@@ -1,6 +1,6 @@
 
 
-import { Command, CommandErrorResponse, CommandResponse } from "@electrodesk/electron-types";
+import { Command, CommandErrorResponse, CommandResponse } from "@electrodesk/types";
 import { IpcMainInvokeEvent, ipcMain } from "electron";
 import { lastValueFrom } from "rxjs";
 import { map } from "rxjs/operators";

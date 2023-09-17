@@ -1,5 +1,5 @@
-import { ApplicationExecCommandParam, CommandCompletedEvent } from "@electrodesk/electron-types/application";
-import { CommandHandlerParam, ElectronEvent } from "@electrodesk/electron-types/core";
+import { ApplicationExecCommandParam, CommandCompletedEvent } from "@electrodesk/types/application";
+import { CommandHandlerParam, ElectronEvent } from "@electrodesk/types/core";
 import { ipcMain } from "electron";
 import { Event } from "electron/main";
 import { Observable, filter, fromEvent, map, take, takeUntil } from "rxjs";

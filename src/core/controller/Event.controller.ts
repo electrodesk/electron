@@ -1,4 +1,4 @@
-import { ElectronEvent } from "@electrodesk/electron-types/core";
+import { ElectronEvent } from "@electrodesk/types/core";
 import { singleton } from "tsyringe";
 import { EventRegistry } from "../domain/registry/Event.registry";
 
