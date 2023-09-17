@@ -1,4 +1,4 @@
-import { ApplicationReadDTO, GetPropertyCommand } from "@electrodesk/electron-types/application";
+import { ApplicationReadDTO, GetPropertyCommand } from "@electrodesk/types/application";
 import { container } from "tsyringe";
 import { command } from "../../../core/decorators";
 import { AbstractTask } from "../../../core/queue";

@@ -1,4 +1,4 @@
-import { Command, CommandErrorResponse, CommandHandler, CommandHandlerParam, CommandResponse, ElectronApi, ElectronEvent, EventHandler, EventHandlerParam } from '@electrodesk/electron-types/core'
+import { Command, CommandErrorResponse, CommandHandler, CommandHandlerParam, CommandResponse, ElectronApi, ElectronEvent, EventHandler, EventHandlerParam } from '@electrodesk/types/core'
 import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron'
 
 let commandHandlers: CommandHandler[] = []

@@ -1,5 +1,5 @@
 import { CommandException } from "../../../../core/exceptions"
-import { ErrorCode } from "../../types/error-codes"
+import { ErrorCode } from '../../constants/error.codes'
 
 export class ApplicationLoadUrlException extends CommandException {
 
