@@ -1,4 +1,4 @@
-import { Command, CommandErrorResponse, CommandHandler, CommandHandlerParam, CommandResponse, ElectronApi, ElectronEvent, EventHandler, EventHandlerParam } from '@trueffelmafia/electron-types/core'
+import { Command, CommandErrorResponse, CommandHandler, CommandHandlerParam, CommandResponse, ElectronApi, ElectronEvent, EventHandler, EventHandlerParam } from '@electrodesk/electron-types/core'
 import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron'
 
 let commandHandlers: CommandHandler[] = []
@@ -16,7 +16,7 @@ function eventHandler(_event: IpcRendererEvent, param: EventHandlerParam) {
   }
 }
 
-contextBridge.exposeInMainWorld('tm_electron', {
+contextBridge.exposeInMainWorld('electrodesk', {
   // execute command on electron client
   execCommand: <R = unknown>(command: Command): CommandResponse<R> | CommandErrorResponse => ipcRenderer.invoke("command:exec", command),
   /**

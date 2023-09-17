@@ -1,4 +1,4 @@
-import { ElectronEvent } from "@trueffelmafia/electron-types/core"
+import { ElectronEvent } from "@electrodesk/electron-types/core"
 import { ApplicationEntity } from "../../libs/application/types/Application.properties"
 
 export interface EventHandlerConfig {

@@ -1,4 +1,4 @@
-import { OpenCommandParam } from "@trueffelmafia/electron-types/application"
+import { OpenCommandParam } from "@electrodesk/electron-types/application"
 import { container } from "tsyringe"
 import { command } from "../../../core/decorators"
 import { AbstractTask } from "../../../core/queue"
