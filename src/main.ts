@@ -1,5 +1,5 @@
-import { OpenCommand } from "@trueffelmafia/electron-types/application";
-import { ElectronEvent } from "@trueffelmafia/electron-types/core";
+import { OpenCommand } from "@electrodesk/electron-types/application";
+import { ElectronEvent } from "@electrodesk/electron-types/core";
 import { App, BrowserWindow, ipcMain } from "electron";
 import { fromEvent, map } from "rxjs";
 import { container } from "tsyringe";

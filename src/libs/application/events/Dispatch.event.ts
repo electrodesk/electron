@@ -1,5 +1,5 @@
-import { EventHandlerParam } from "@trueffelmafia/electron-types"
-import { ApplicationDispatchEventPayload } from "@trueffelmafia/electron-types/application"
+import { EventHandlerParam } from "@electrodesk/electron-types"
+import { ApplicationDispatchEventPayload } from "@electrodesk/electron-types/application"
 import { container } from "tsyringe"
 import { EventHandler } from "../../../core/api/event"
 import { eventHandler } from "../../../core/decorators"
