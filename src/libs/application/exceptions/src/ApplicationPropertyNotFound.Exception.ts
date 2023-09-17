@@ -1,5 +1,5 @@
 import { CommandException } from "../../../../core/exceptions"
-import { ErrorCode } from "../../types/error-codes"
+import { ErrorCode } from "../../constants/error.codes"
 
 export class ApplicationInvalidPropertyKeyException extends CommandException {
   readonly code = ErrorCode.APPLICATION_INVALID_PROPERTY_KEY
