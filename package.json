@@ -1,0 +1,47 @@
+{
+  "name": "@electrodesk/electron",
+  "version": "0.0.0",
+  "description": "electron middleware to handle multiple windows",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config ./.config/webpack.dev.config.ts",
+    "lint": "eslint",
+    "start": "electron ./dist/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/electrodesk/electron.git"
+  },
+  "keywords": [
+    "electron",
+    "window"
+  ],
+  "author": "Ralf Hannuschka",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/electrodesk/electron/issues"
+  },
+  "homepage": "https://github.com/electrodesk/electron#readme",
+  "dependencies": {
+    "dotenv": "16.3.1",
+    "electron": "26.0.0",
+    "rxjs": "7.8.1",
+    "uuid": "9.0.0"
+  },
+  "devDependencies": {
+    "@electrodesk/types": "0.0.1",
+    "@types/uuid": "9.0.2",
+    "@typescript-eslint/eslint-plugin": "6.2.0",
+    "@typescript-eslint/parser": "6.2.0",
+    "eslint": "8.46.0",
+    "reflect-metadata": "0.1.13",
+    "ts-loader": "9.4.4",
+    "ts-node": "10.9.1",
+    "tsconfig-paths-webpack-plugin": "4.1.0",
+    "tsyringe": "4.8.0",
+    "typescript": "5.1.6",
+    "webpack": "5.88.2",
+    "webpack-cli": "5.1.4"
+  }
+}
