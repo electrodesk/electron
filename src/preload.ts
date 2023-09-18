@@ -18,7 +18,7 @@ function eventHandler(_event: IpcRendererEvent, param: EventHandlerParam) {
 
 contextBridge.exposeInMainWorld('electrodesk', {
   // execute command on electron client
-  execCommand: <R = unknown>(command: Command): CommandResponse<R> | CommandErrorResponse => ipcRenderer.invoke("command:exec", command),
+  execCommand: <R = unknown>(command: Command): Promise<CommandResponse<R> | CommandErrorResponse> => ipcRenderer.invoke("command:exec", command),
   /**
    * dispatch event from renderer process to main process
    */

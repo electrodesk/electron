@@ -30,7 +30,7 @@
     "uuid": "9.0.0"
   },
   "devDependencies": {
-    "@electrodesk/types": "0.0.1",
+    "@electrodesk/types": "0.0.2",
     "@types/uuid": "9.0.2",
     "@typescript-eslint/eslint-plugin": "6.2.0",
     "@typescript-eslint/parser": "6.2.0",
