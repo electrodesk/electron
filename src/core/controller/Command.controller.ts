@@ -34,14 +34,14 @@ export class CommandController {
     })
   }
 
-  public exec(command: Command): CommandResponse | CommandErrorResponse {
+  public exec(command: Command): Promise<CommandResponse | CommandErrorResponse> {
     return this.executeCommand(command)
   }
 
   /**
    * @description execute command request
    */
-  private executeCommand(command: Command, senderProcessId?: number): CommandResponse | CommandErrorResponse {
+  private executeCommand(command: Command, senderProcessId?: number): Promise<CommandResponse | CommandErrorResponse> {
     try {
       const commandEntity = this.commandRegistry.get(command.command);
       const { ctor, queue } = commandEntity
@@ -59,7 +59,7 @@ export class CommandController {
       return lastValueFrom(
         completed$,
         { defaultValue: { code: 0, data: void 0 } }
-      ) as CommandResponse
+      )
 
     } catch (error) {
       if (error instanceof CommandException) {
@@ -68,6 +68,7 @@ export class CommandController {
           error: error
         })
       }
+      // TODO log error and not throw
       throw error;
     }
   }
@@ -81,19 +82,24 @@ export class CommandController {
     return queue
   }
 
-  private handleCommandCompletedResponse(res: ITaskResponse): unknown {
+  private handleCommandCompletedResponse(res: ITaskResponse): CommandResponse | CommandErrorResponse {
     if (res.state === TaskState.ERROR) {
-      const errorRes = {
-        code: ErrorCode.COMMAND_ERROR,
-        error: res.error
-      }
-
       if (res.error instanceof CommandException) {
-        errorRes.code = res.error.code;
+        return {
+          code: res.error.code,
+          error: res.error
+        }
       }
 
-      return errorRes
+      return {
+        code: ErrorCode.COMMAND_ERROR,
+        error: res.error as Error
+      }
     }
-    return res.result
+
+    return {
+      code: 0,
+      data: res.result
+    }
   }
 }
