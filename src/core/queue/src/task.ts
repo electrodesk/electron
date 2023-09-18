@@ -1,6 +1,6 @@
-import {Observable, Subject, concat, of, ReplaySubject, timer} from 'rxjs'
-import {tap, filter, bufferCount, map, takeUntil} from 'rxjs/operators'
-import {TaskState} from './api'
+import { Observable, ReplaySubject, Subject, concat, of, timer } from 'rxjs';
+import { bufferCount, filter, map, takeUntil, tap } from 'rxjs/operators';
+import { TaskState } from './api';
 
 export interface ITaskResponse<T = unknown> {
   state: TaskState;
@@ -119,13 +119,15 @@ export abstract class AbstractTask<T = unknown> {
       filter((isAllowedToStart: boolean) => isAllowedToStart),
       tap(() => this.updateState(TaskState.START)),
     ).subscribe({
-      next: ((): void => {
+      next: (): void => {
         if (this.timeout > 0) this.startTimeoutScheduler()
         this.updateState(TaskState.PROGRESS)
 
         try { this.execute() } catch (error) { this.error(error as Error) }
-      }),
-      error: (error: Error) => console.error(error.message),
+      },
+      error: (error: Error) => {
+        this.error(error);
+      }
     })
   }
 

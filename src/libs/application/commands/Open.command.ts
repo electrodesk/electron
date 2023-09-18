@@ -5,7 +5,7 @@ import { AbstractTask } from "../../../core/queue"
 import { WindowBuilder } from "../../../support"
 import { Application } from "../domain/model/Application.model"
 import { ApplicationRepository } from "../domain/repository/Application.repository"
-import { ApplicationNotFoundException } from "../exceptions"
+import { ApplicationLoadUrlException, ApplicationNotFoundException } from "../exceptions"
 import { ApplicationEntity } from "../types/Application.properties"
 
 @command({
@@ -23,33 +23,32 @@ export class ApplicationOpenTask extends AbstractTask {
   }
 
   async execute(): Promise<void> {
-    await this.isAuthorized()
-    await this.hasPermission()
-
-    super.complete(await this.openApplication())
-  }
-
-  private async isAuthorized(): Promise<boolean> {
-    return Promise.resolve(true)
-  }
-
-  private hasPermission(): Promise<boolean> {
-    return Promise.resolve(true)
+    try {
+      const applicationId = await this.openApplication()
+      super.complete(applicationId)
+    } catch (error) {
+      super.error(error as Error)
+    }
   }
 
   private async openApplication(): Promise<string> {
     const application = this.createApplication()
     this.applicationRepository.add(application)
-    application.browserWindow.webContents.openDevTools()
-    await application.open(this.param.application)
-    return application.uuid
+
+    // application.browserWindow.webContents.openDevTools()
+    try {
+      await application.open(this.param.application)
+      return application.uuid
+    } catch (error) {
+      throw new ApplicationLoadUrlException(this.param.application)
+    }
   }
 
   private createApplication(): ApplicationEntity {
     const builder = container.resolve(WindowBuilder)
     let browserWindowBuilder = builder
       .withDimension(800, 600)
-      .withTitle('Platzhirsch: Ralf')
+      .withTitle('Todo pass title')
       .withShow(false)
       .withDevTools(true);
 
