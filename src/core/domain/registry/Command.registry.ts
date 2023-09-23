@@ -1,6 +1,6 @@
 import { singleton } from "tsyringe";
-import { CommandAllreadyExistsExecption, CommandNotRegisteredException } from "../../exceptions";
 import { QueueConfig } from "../../api";
+import { CommandAllreadyExistsExecption, CommandNotRegisteredException } from "../../exceptions";
 import { TaskConstructor } from "../../queue";
 
 interface CommandEntity {
@@ -41,6 +41,6 @@ export class CommandRegistry {
       return this.commandRegistry.get(command) as CommandEntity;
     }
 
-    throw new CommandNotRegisteredException()
+    throw new CommandNotRegisteredException(`Command "${command}" not found`)
   }
 }

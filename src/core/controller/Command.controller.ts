@@ -60,7 +60,6 @@ export class CommandController {
         completed$,
         { defaultValue: { code: 0, data: void 0 } }
       )
-
     } catch (error) {
       if (error instanceof CommandException) {
         return Promise.resolve({

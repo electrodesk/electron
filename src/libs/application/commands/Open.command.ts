@@ -2,11 +2,11 @@ import { OpenCommandParam } from "@electrodesk/types/application"
 import { container } from "tsyringe"
 import { command } from "../../../core/decorators"
 import { AbstractTask } from "../../../core/queue"
-import { WindowBuilder } from "../../../support"
+import { WindowBuilder } from "../../../core/services"
 import { Application } from "../domain/model/Application.model"
 import { ApplicationRepository } from "../domain/repository/Application.repository"
 import { ApplicationLoadUrlException, ApplicationNotFoundException } from "../exceptions"
-import { ApplicationEntity } from "../types/Application.properties"
+import type { ApplicationEntity } from "../types/Application.properties"
 
 @command({
   path: 'application:open',

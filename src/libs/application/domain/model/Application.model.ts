@@ -2,7 +2,7 @@ import { BrowserWindow } from "electron";
 import { BehaviorSubject, Observable } from "rxjs";
 import { v4 as uuid } from "uuid";
 import { ApplicationLoadUrlException } from "../../exceptions";
-import { ApplicationEntity, ApplicationState } from "../../types/Application.properties";
+import { ApplicationState, type ApplicationEntity } from "../../types/Application.properties";
 
 export class Application implements ApplicationEntity {
 
