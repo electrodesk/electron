@@ -3,10 +3,10 @@ import { ElectronEvent } from "@electrodesk/types/core";
 import { App, BrowserWindow, ipcMain } from "electron";
 import { fromEvent, map } from "rxjs";
 import { container } from "tsyringe";
+import { bootstrap } from "./core/bootstrap/bootstrap";
 import { CommandController } from "./core/controller/Command.controller";
 import { EventController } from "./core/controller/Event.controller";
-import { ConfigService } from "./support";
-import { bootstrap } from "./support/src/bootstrap";
+import { ConfigService } from "./core/services";
 
 export class Main {
   static mainWindow?: BrowserWindow

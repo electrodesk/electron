@@ -1,5 +1,5 @@
 import { config as dotenvConfig } from 'dotenv'
-import { ConfigKey, ConfigService, ConfigValue } from './Config'
+import { ConfigKey, ConfigService, ConfigValue } from '../services/src/Config'
 
 export function environmentVariablesInitializerFactory(configService: ConfigService): () => void {
   return () => {

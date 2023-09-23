@@ -1,6 +1,6 @@
 import { filter, take } from 'rxjs/operators';
 import { singleton } from 'tsyringe';
-import { ApplicationEntity, ApplicationState } from '../../types/Application.properties';
+import { ApplicationState, type ApplicationEntity } from '../../types/Application.properties';
 
 @singleton()
 export class ApplicationRepository {

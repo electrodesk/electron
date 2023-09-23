@@ -1,5 +1,5 @@
 import { ElectronEvent } from "@electrodesk/types/core"
-import { ApplicationEntity } from "../../libs/application/"
+import type { ApplicationEntity } from "../../libs/application/"
 
 export interface EventHandlerConfig {
   channel: string
