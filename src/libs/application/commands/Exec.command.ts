@@ -9,7 +9,7 @@ import { command } from "../../../core/decorators";
 import { AbstractTask } from "../../../core/queue";
 import { ApplicationRepository } from "../domain/repository/Application.repository";
 import { ApplicationNotFoundException } from "../exceptions";
-import { ApplicationEntity } from "../types/Application.properties";
+import { ApplicationModel } from "../types/Application.properties";
 
 /**
  * Command to execute something on application
@@ -22,7 +22,7 @@ export class ApplicationExecCommand extends AbstractTask {
 
   private applicationRegistry = container.resolve(ApplicationRepository)
 
-  private application?: ApplicationEntity;
+  private application?: ApplicationModel;
 
   constructor(
     private readonly param: ApplicationExecCommandParam
