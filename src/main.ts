@@ -1,12 +1,13 @@
 import { OpenCommand } from "@electrodesk/types/application";
-import { ElectronEvent } from "@electrodesk/types/core";
+import { CommandErrorResponse, ElectronEvent } from "@electrodesk/types/core";
 import { App, BrowserWindow, ipcMain } from "electron";
 import { fromEvent, map } from "rxjs";
 import { container } from "tsyringe";
 import { bootstrap } from "./core/bootstrap/bootstrap";
 import { CommandController } from "./core/controller/Command.controller";
 import { EventController } from "./core/controller/Event.controller";
-import { ConfigService } from "./core/services";
+import { ConfigService, WindowBuilder } from "./core/services";
+import { ApplicationLoadUrlException, ApplicationNotInRegistryException } from "./libs/application/exceptions";
 
 export class Main {
   static mainWindow?: BrowserWindow
@@ -22,10 +23,6 @@ export class Main {
   }
 
   static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
-    // we pass the Electron.App object and the  
-    // Electron.BrowserWindow into this function 
-    // so this class has no dependencies. This 
-    // makes the code easier to write tests for 
     Main.BrowserWindow = browserWindow;
     Main.application = app;
     Main.application.on('window-all-closed', Main.onWindowAllClosed);
@@ -40,8 +37,16 @@ export class Main {
       application: configService.getValue('START_APPLICATION') as string ?? '',
       command: 'application:open',
     }
+
     commandManager.exec(openStartappCommand)
-    // close electron
+      .then((res) => {
+        // hide splash screen
+
+        if (res.code !== 0) {
+          throw (res as CommandErrorResponse).error;
+        }
+      })
+      .catch((error: unknown) => Main.handleStartError(error))
   }
 
   /**
@@ -52,5 +57,35 @@ export class Main {
     fromEvent(ipcMain, 'rendererEvent').pipe(
       map((event) => event as [Electron.IpcMainEvent, ElectronEvent]),
     ).subscribe(([e, event]) => eventController.dispatchEvent(event, e.sender.getOSProcessId()))
+  }
+
+  /**
+   * @description handle errors which occours on starting electron client
+   */
+  private static handleStartError(error: unknown): void {
+    switch (true) {
+      case error instanceof ApplicationNotInRegistryException:
+        Main.openErrorPage('./static/start-page-not-found-error.html')
+      break;
+
+      case error instanceof ApplicationLoadUrlException:  
+        Main.openErrorPage('./static/start-page-not-ready.html')
+      break;
+
+      default:
+        throw error;
+    }
+  }
+
+  /**
+   * @description show error page
+   */
+  private static openErrorPage(page: string): void {
+    const window = new WindowBuilder()
+      .withShow(false)
+      .build()
+
+    window.loadFile(page)
+    window.once('ready-to-show', () => window.show())
   }
 }
