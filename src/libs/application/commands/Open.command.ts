@@ -1,12 +1,13 @@
-import { OpenCommandParam } from "@electrodesk/types/application"
+import { ApplicationEntity, OpenCommandParam } from "@electrodesk/types/application"
 import { container } from "tsyringe"
 import { command } from "../../../core/decorators"
 import { AbstractTask } from "../../../core/queue"
 import { WindowBuilder } from "../../../core/services"
 import { Application } from "../domain/model/Application.model"
+import { ApplicationRegistry } from "../domain/repository/Application.registry"
 import { ApplicationRepository } from "../domain/repository/Application.repository"
-import { ApplicationLoadUrlException, ApplicationNotFoundException } from "../exceptions"
-import type { ApplicationEntity } from "../types/Application.properties"
+import { ApplicationAllReadyRunningException, ApplicationLoadUrlException, ApplicationNotFoundException } from "../exceptions"
+import type { ApplicationModel } from "../types/Application.properties"
 
 @command({
   path: 'application:open',
@@ -15,6 +16,8 @@ import type { ApplicationEntity } from "../types/Application.properties"
 export class ApplicationOpenTask extends AbstractTask {
   private readonly applicationRepository = container.resolve(ApplicationRepository)
 
+  private readonly applicationRegistry = container.resolve(ApplicationRegistry)
+
   constructor(
     private readonly param: OpenCommandParam,
     private readonly osProcessId: number
@@ -22,33 +25,46 @@ export class ApplicationOpenTask extends AbstractTask {
     super();
   }
 
-  async execute(): Promise<void> {
-    try {
-      const applicationId = await this.openApplication()
-      super.complete(applicationId)
-    } catch (error) {
-      super.error(error as Error)
-    }
+  execute(): void {
+    this.openApplication()
+      .then((applicationId) => super.complete(applicationId))
+      .catch((error: Error) => super.error(error))
   }
 
+  /**
+   * @description open application by given name
+   */
   private async openApplication(): Promise<string> {
-    const application = this.createApplication()
-    this.applicationRepository.add(application)
+    const applicationEntity = await this.applicationRegistry.find(this.param.application);
 
-    // application.browserWindow.webContents.openDevTools()
+    // check application can opened multiple times, if not and it is running throw error
+    if (applicationEntity.multi === false) {
+      const application = this.applicationRepository.findBy("name", applicationEntity.name)
+      if (application) {
+        throw new ApplicationAllReadyRunningException(applicationEntity.name)
+      }
+    }
+
+    const application = this.createApplication(applicationEntity)
+    this.applicationRepository.add(application)
+    application.browserWindow.webContents.openDevTools()
+
     try {
-      await application.open(this.param.application)
+      await application.open(applicationEntity.url)
       return application.uuid
     } catch (error) {
       throw new ApplicationLoadUrlException(this.param.application)
     }
   }
 
-  private createApplication(): ApplicationEntity {
+  /**
+   * @description create new application
+   */
+  private createApplication(application: ApplicationEntity): ApplicationModel {
     const builder = container.resolve(WindowBuilder)
     let browserWindowBuilder = builder
       .withDimension(800, 600)
-      .withTitle('Todo pass title')
+      .withTitle(application.name)
       .withShow(false)
       .withDevTools(true);
 
@@ -62,7 +78,8 @@ export class ApplicationOpenTask extends AbstractTask {
 
     return new Application(
       browserWindowBuilder.build(),
-      this.param.data
+      this.param.data,
+      application.name
     )
   }
 }

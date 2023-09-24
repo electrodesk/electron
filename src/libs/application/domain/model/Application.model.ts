@@ -2,9 +2,9 @@ import { BrowserWindow } from "electron";
 import { BehaviorSubject, Observable } from "rxjs";
 import { v4 as uuid } from "uuid";
 import { ApplicationLoadUrlException } from "../../exceptions";
-import { ApplicationState, type ApplicationEntity } from "../../types/Application.properties";
+import { ApplicationState, type ApplicationModel } from "../../types/Application.properties";
 
-export class Application implements ApplicationEntity {
+export class Application implements ApplicationModel {
 
   /**
    * application id which is used to register our self into application manager
@@ -32,7 +32,8 @@ export class Application implements ApplicationEntity {
 
   constructor(
     public readonly browserWindow: BrowserWindow,
-    public readonly data: unknown
+    public readonly data: unknown,
+    public readonly name: string
   ) { }
 
   getBrowserWindow(): BrowserWindow | undefined {
