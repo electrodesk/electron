@@ -26,7 +26,7 @@ export class CommandRegistry {
     queue: QueueConfig | string = { name: 'global', parallelCount: 5 }
   ): void {
     if (this.commandRegistry.has(command)) {
-      throw new CommandAllreadyExistsExecption()
+      throw new CommandAllreadyExistsExecption(`Command "${command}" allready registered`)
     }
 
     if (typeof queue === 'string') {

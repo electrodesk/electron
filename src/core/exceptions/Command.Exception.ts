@@ -1,30 +1,14 @@
-import { ErrorCode } from "./error.codes";
+import { ErrorCode } from "../domain/entity/ErrorCode.entity";
+import { AbstractException } from "./Abstract.Exception";
 
-export abstract class CommandException extends Error {
-  abstract readonly code: number;
-  protected originalError: Error | null = null;
-
-  get error(): Error | null {
-    return this.originalError
-  }
+export abstract class CommandException extends AbstractException {
+  protected readonly errorCode: number = ErrorCode.COMMAND_ERROR;
 }
 
 export class CommandAllreadyExistsExecption extends CommandException {
-  readonly code = ErrorCode.COMMAND_ALLREADY_REGISTERED;
-
-  protected originalError: Error | null = null;
-
-  get error(): Error | null {
-    return this.originalError
-  }
+  protected errorCode = ErrorCode.COMMAND_ALLREADY_REGISTERED;
 }
 
 export class CommandNotRegisteredException extends CommandException {
-  readonly code = ErrorCode.COMMAND_NOT_REGISTERED;
-
-  protected originalError: Error | null = null;
-
-  get error(): Error | null {
-    return this.originalError
-  }
+  readonly errorCode = ErrorCode.COMMAND_NOT_REGISTERED;
 }

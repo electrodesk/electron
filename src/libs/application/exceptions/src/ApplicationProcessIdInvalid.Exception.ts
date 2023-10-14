@@ -1,8 +1,8 @@
 import { CommandException } from "../../../../core/exceptions"
-import { ErrorCode } from "../../constants/error.codes"
+import { ErrorCode } from "../../domain/entity/ErrorCode.entity"
 
 export class InvalidProcessIdException extends CommandException {
-  readonly code = ErrorCode.APPLICATION_INVALID_PROCESS_ID
+  protected readonly errorCode = ErrorCode.APPLICATION_INVALID_PROCESS_ID
 
   constructor() {
     super(`No valid application process id`)
