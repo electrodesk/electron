@@ -6,7 +6,7 @@ import { WindowBuilder } from "../../../core/services"
 import { Application } from "../domain/model/Application.model"
 import { ApplicationRegistry } from "../domain/repository/Application.registry"
 import { ApplicationRepository } from "../domain/repository/Application.repository"
-import { ApplicationAllReadyRunningException, ApplicationLoadUrlException, ApplicationNotFoundException } from "../exceptions"
+import { ApplicationAllReadyRunningException, ApplicationNotFoundException } from "../exceptions"
 import type { ApplicationModel } from "../types/Application.properties"
 
 @command({
@@ -49,12 +49,8 @@ export class ApplicationOpenTask extends AbstractTask {
     this.applicationRepository.add(application)
     application.browserWindow.webContents.openDevTools()
 
-    try {
-      await application.open(applicationEntity.url)
-      return application.uuid
-    } catch (error) {
-      throw new ApplicationLoadUrlException(this.param.application)
-    }
+    await application.open(applicationEntity.url)
+    return application.uuid
   }
 
   /**

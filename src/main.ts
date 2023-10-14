@@ -1,11 +1,14 @@
 import { OpenCommand } from "@electrodesk/types/application";
 import { ElectronEvent } from "@electrodesk/types/core";
 import { App, BrowserWindow, ipcMain } from "electron";
+import { EOL } from 'os';
 import { fromEvent, map } from "rxjs";
 import { container } from "tsyringe";
 import { bootstrap } from "./core/bootstrap/bootstrap";
 import { CommandController } from "./core/controller/Command.controller";
 import { EventController } from "./core/controller/Event.controller";
+import { ErrorCode } from "./core/domain/entity/ErrorCode.entity";
+import { AbstractException } from "./core/exceptions/Abstract.Exception";
 import { ConfigService } from "./core/services";
 
 export class Main {
@@ -15,10 +18,13 @@ export class Main {
 
   private static onWindowAllClosed(): void { }
 
-  private static async onReady(): Promise<void> {
-    await bootstrap()
-    Main.registerEvent()
-    Main.runMainApplication()
+  private static onReady(): void {
+    bootstrap()
+      .then(() => {
+        Main.registerEvent()
+        return Main.runMainApplication()
+      })
+      .catch((error) => Main.handleError(error))
   }
 
   static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
@@ -32,7 +38,7 @@ export class Main {
     Main.application.on('ready', Main.onReady);
   }
 
-  private static runMainApplication(): void {
+  private static runMainApplication(): any {
     const configService = container.resolve(ConfigService)
     const commandManager = container.resolve(CommandController)
 
@@ -40,8 +46,23 @@ export class Main {
       application: configService.getValue('START_APPLICATION') as string ?? '',
       command: 'application:open',
     }
-    commandManager.exec(openStartappCommand)
-    // close electron
+    return commandManager.exec(openStartappCommand)
+  }
+
+  private static handleError(error: Error): void {
+    let code = ErrorCode.SYSTEM_ERROR 
+
+    process.stdout.write(`An unexpected error occurred, we would present you some logs but we do not have yet. ${EOL}`)
+
+    // log error message
+    if (error instanceof AbstractException) {
+      process.stdout.write(`Error: ${error.message}  ${EOL}`)
+      process.stdout.write(`Code: ${error.code}  ${EOL}`)
+      process.stdout.write(`Cause: ${JSON.stringify(error.cause, null, 2)}  ${EOL}`)
+      code = error.code
+    }
+
+    process.exit(code)
   }
 
   /**

@@ -1,8 +1,8 @@
 import { CommandException } from '../../../../core/exceptions';
-import { ErrorCode } from "../../constants/error.codes";
+import { ErrorCode } from "../../domain/entity/ErrorCode.entity";
 
 export class ApplicationNotFoundException extends CommandException {
-  readonly code = ErrorCode.APPLICATION_NOT_FOUND
+  protected readonly errorCode = ErrorCode.APPLICATION_NOT_FOUND
 
   constructor() {
     super(`No application found with given ID`)

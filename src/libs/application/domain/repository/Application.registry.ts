@@ -5,7 +5,8 @@ import { readFile } from 'node:fs/promises';
 import { from, lastValueFrom, map, take, tap, timeout } from 'rxjs';
 import { singleton } from 'tsyringe';
 import { ConfigService } from '../../../../core/services';
-import { ApplicationNotInRegistryException, ApplicationRegistryCouldNotLoadApplicationsException } from '../../exceptions';
+import { ApplicationNotInRegistryException } from '../../exceptions';
+import { RegistryFileNotFoundException } from '../../exceptions/src/RegistryFileNotFound.Exception';
 
 /**
  * @description
@@ -70,11 +71,7 @@ export class ApplicationRegistry {
     }
 
     if (this.applications === null) {
-      try {
-        this.applications = await this.loadApplictionsFromRegistry(repositoryPath)
-      } catch (error) {
-        throw new ApplicationRegistryCouldNotLoadApplicationsException()
-      }
+      this.applications = await this.loadApplictionsFromRegistry(repositoryPath)
     }
     return this.applications;
   }
@@ -96,14 +93,14 @@ export class ApplicationRegistry {
 
     // make absolute path if it is not
     if (!existsSync(path)) {
-      return false
+      throw new RegistryFileNotFoundException(`File for system registry was not found on given path: ${path}. Please check .env file for correct path and file exists.`)
     }
 
     return true
   }
 
   private isUrl(path: string): boolean {
-    return path.match(/^(https?|file|ftp)/)?.length === 0
+    return !!/^(https?|file|ftp)/.exec(path)
   }
 
   /**

@@ -1,12 +1,16 @@
 import { config as dotenvConfig } from 'dotenv'
+import { DotEnvFileReadException } from '../exceptions/DotEnvFileRead.Exception'
 import { ConfigKey, ConfigService, ConfigValue } from '../services/src/Config'
 
 export function environmentVariablesInitializerFactory(configService: ConfigService): () => void {
   return () => {
-    const env = {}
-    dotenvConfig({ path: './.env', processEnv: env, encoding: 'utf8' })
+    const result = dotenvConfig({ path: './.env', processEnv: {}, encoding: 'utf8' })
 
-    for (const [key, value] of Object.entries<ConfigValue>(env)) {
+    if (result.error) {
+      throw new DotEnvFileReadException(`Could not open .env file`, result.error)
+    }
+
+    for (const [key, value] of Object.entries<ConfigValue>(result.parsed ?? {})) {
       configService.setValue(key as ConfigKey, value)
     }
   }
