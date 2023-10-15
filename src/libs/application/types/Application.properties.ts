@@ -9,9 +9,7 @@ export const enum ApplicationState {
   CLOSED = 2,
 }
 
-export interface ApplicationModelConstructor {
-  new(browserWindow: BrowserWindow): ApplicationModel
-}
+export type ApplicationModelConstructor = new(browserWindow: BrowserWindow) => ApplicationModel
 
 export interface ApplicationModel extends ApplicationReadDTO {
 
