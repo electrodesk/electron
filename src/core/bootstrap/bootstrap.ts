@@ -1,4 +1,4 @@
-import { Observable, catchError, concatMap, from, isObservable, lastValueFrom, map, of, take, timeout } from "rxjs"
+import { Observable, concatMap, from, isObservable, lastValueFrom, map, take } from "rxjs"
 import { container } from "tsyringe"
 import { ConfigService } from "../services"
 import { environmentVariablesInitializerFactory } from "./environment-variables-initializer.factory"
@@ -34,11 +34,7 @@ export async function bootstrap(): Promise<void> {
           retVal = from(Promise.resolve(retVal))
         }
 
-        return retVal.pipe(
-          timeout(30 * 1000),
-          catchError(() => of(`timed out`)),
-          take(1),
-        )
+        return retVal.pipe(take(1))
       }),
       map(() => void 0)
     )

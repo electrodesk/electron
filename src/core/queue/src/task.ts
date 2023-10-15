@@ -8,11 +8,19 @@ export interface ITaskResponse<T = unknown> {
   error?: Error;
 }
 
-export interface TaskConstructor<T = AbstractTask> {
-  new(...args: unknown[]): T;
-}
+export type TaskConstructor<T = AbstractTask> = new(...args: unknown[]) => T;
 
 export abstract class AbstractTask<T = unknown> {
+
+  /**
+   * @description time until task will timed out, this is important since only a specific number of
+   * tasks can run in parallel. To avoid 1 task is blocking whole queue it will automatically
+   * die after 30 seconds if no response was send.
+   * 
+   * Set to -1 to disable this behavior for that task
+   */
+  protected readonly timeout: number = 30000;
+
   abstract execute(payload?: unknown): void;
 
   private stateChange$ = new ReplaySubject<TaskState>(1)
@@ -28,11 +36,6 @@ export abstract class AbstractTask<T = unknown> {
    * returns observable which notify if task state has been changed
    */
   stateChange: Observable<TaskState> = this.stateChange$.asObservable();
-
-  constructor(
-    /** default timeout after 30sec */
-    private readonly timeout = 30000
-  ) {}
 
   get completed(): Observable<ITaskResponse<T>> {
     return this.completed$.asObservable()
