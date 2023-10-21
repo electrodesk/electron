@@ -1,7 +1,7 @@
 import { ErrorCode } from "../domain/entity/ErrorCode.entity";
 import { AbstractException } from "./Abstract.Exception";
 
-export abstract class CommandException extends AbstractException {
+export class CommandException extends AbstractException {
   protected readonly errorCode: number = ErrorCode.COMMAND_ERROR;
 }
 

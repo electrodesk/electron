@@ -1,5 +1,5 @@
 import { EventHandlerParam } from "@electrodesk/types"
-import { ApplicationDispatchEventPayload } from "@electrodesk/types/application"
+import { ApplicationDispatchEventPayload, ApplicationReadDTO } from "@electrodesk/types/application"
 import { container } from "tsyringe"
 import { EventHandler } from "../../../core/api/event"
 import { eventHandler } from "../../../core/decorators"
@@ -17,38 +17,49 @@ export class ApplicationEventHandler implements EventHandler {
   private applicationRegistry = container.resolve(ApplicationRepository)
 
   /**
-   * @description electron fetches an event from renderer process send events
-   * to other running applications
+   * @description application sends an event
+   * @param payload - event data
+   * @param osProcessId - processId of sender
    */
   handleEvent(payload: ApplicationDispatchEventPayload, osProcessId?: number): void {
-    if (payload.target !== undefined) {
-      this.emitEventOnApplication(payload)
+    if (payload.broadcast) {
+      this.broadcastEvent(payload, osProcessId)
       return
     }
 
-    this.broadcastEvent(payload, osProcessId)
+    if (osProcessId === undefined) {
+      return;
+    }
+
+    const application = this.applicationRegistry.findByProcessId(osProcessId)
+    if (!application) {
+      return;
+    }
+
+    for (let listener of application.listeners.list()) {
+      this.emitEventOnApplication(listener, payload.event, payload.data)
+    }
   }
 
   /**
-   * @description only emit a message to another application, this is point to point
-   * but without any response
+   * @description send event to an other application
+   * @param target - uuid of application we want to send event
+   * @param event - event name which is send by application
+   * @param payload - payload for the event
    */
-  private emitEventOnApplication(event: ApplicationDispatchEventPayload): void {
-    const application = this.applicationRegistry.findById(event.target!)
+  private emitEventOnApplication(target: ApplicationReadDTO['uuid'], event: string, payload: unknown): void {
+    const application = this.applicationRegistry.findById(target)
 
     if (!application) {
       throw new ApplicationNotFoundException()
     }
 
-    const param: EventHandlerParam = {
-      event: event.event,
-      payload: event.data
-    }
+    const param: EventHandlerParam = { event, payload }
     application.send(`mainEvent`, param)
   }
 
   /**
-   * @description broadcast event to all applications, exclude this app by our self
+   * @description broadcast event to all applications, exclude sender
    */
   private broadcastEvent(event: ApplicationDispatchEventPayload, osProcessId?: number): void {
     const applications = this.applicationRegistry.list()
@@ -57,10 +68,6 @@ export class ApplicationEventHandler implements EventHandler {
         continue
       }
 
-      const param: EventHandlerParam = {
-        event: event.event,
-        payload: event.data
-      }
       application.send(`mainEvent`, event)
     }
   }

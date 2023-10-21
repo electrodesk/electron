@@ -47,8 +47,6 @@ export class ApplicationOpenTask extends AbstractTask {
 
     const application = this.createApplication(applicationEntity)
     this.applicationRepository.add(application)
-    application.browserWindow.webContents.openDevTools()
-
     await application.open(applicationEntity.url)
     return application.uuid
   }
