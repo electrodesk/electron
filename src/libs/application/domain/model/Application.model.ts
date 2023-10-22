@@ -43,8 +43,7 @@ export class Application implements ApplicationModel {
     public readonly browserWindow: BrowserWindow,
     public readonly data: unknown,
     public readonly name: string
-  ) { 
-  }
+  ) {}
 
   getBrowserWindow(): BrowserWindow | undefined {
     return this.browserWindow;

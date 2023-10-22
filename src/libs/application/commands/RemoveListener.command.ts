@@ -9,10 +9,10 @@ import { ApplicationNotFoundException } from "../exceptions";
  * @description register listener to running application
  */
 @command({
-  path: "application:register-listener",
+  path: "application:remove-listener",
   queue: "application",
 })
-export class ApplicationRegisterListenerCommand extends AbstractTask {
+export class ApplicationRemoveListenerCommand extends AbstractTask {
   private readonly applicationRepository = container.resolve(
     ApplicationRepository
   );
@@ -31,14 +31,16 @@ export class ApplicationRegisterListenerCommand extends AbstractTask {
     );
 
     if (!target) {
-      throw new ApplicationNotFoundException();
+      console.warn(`Application to remove event listeners was not found`)
+      super.complete()
+      return;
     }
 
     if (!listener) {
       throw new ApplicationNotFoundException();
     }
 
-    target.listeners.register(listener.uuid);
+    target.listeners.unregister(listener.uuid);
     super.complete();
   }
 }

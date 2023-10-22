@@ -1,4 +1,4 @@
-import { ApplicationEntity, OpenCommandParam } from "@electrodesk/types/application"
+import { ApplicationEntity, ApplicationReadDTO, OpenCommandParam } from "@electrodesk/types/application"
 import { container } from "tsyringe"
 import { command } from "../../../core/decorators"
 import { AbstractTask } from "../../../core/queue"
@@ -34,7 +34,7 @@ export class ApplicationOpenTask extends AbstractTask {
   /**
    * @description open application by given name
    */
-  private async openApplication(): Promise<string> {
+  private async openApplication(): Promise<ApplicationReadDTO> {
     const applicationEntity = await this.applicationRegistry.find(this.param.application);
 
     // check application can opened multiple times, if not and it is running throw error
@@ -48,7 +48,11 @@ export class ApplicationOpenTask extends AbstractTask {
     const application = this.createApplication(applicationEntity)
     this.applicationRepository.add(application)
     await application.open(applicationEntity.url)
-    return application.uuid
+    return {
+      uuid: application.uuid,
+      osProcessId: application.osProcessId,
+      data: application.data /** das wollen wir nicht wirklich */
+    }
   }
 
   /**
