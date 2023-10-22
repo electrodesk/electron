@@ -5,11 +5,11 @@ import { Event } from "electron/main";
 import { Observable, filter, fromEvent, map, take, takeUntil } from "rxjs";
 import { container } from "tsyringe";
 import { v4 as uuid } from "uuid";
-import { command } from "../../../core/decorators";
-import { AbstractTask } from "../../../core/queue";
-import { ApplicationRepository } from "../domain/repository/Application.repository";
-import { ApplicationNotFoundException } from "../exceptions";
-import { ApplicationModel } from "../types/Application.properties";
+import { command } from "../../../../core/decorators";
+import { AbstractTask } from "../../../../core/queue";
+import { ApplicationRepository } from "../../domain/repository/Application.repository";
+import { ApplicationNotFoundException } from "../../exceptions";
+import { ApplicationModel } from "../../types/Application.properties";
 
 /**
  * Command to execute something on application

@@ -9,7 +9,7 @@ import { CommandController } from "./core/controller/Command.controller";
 import { EventController } from "./core/controller/Event.controller";
 import { ErrorCode } from "./core/domain/entity/ErrorCode.entity";
 import { AbstractException } from "./core/exceptions/Abstract.Exception";
-import { ConfigService } from "./core/services";
+import { ConfigService, Logger } from "./core/services";
 
 export class Main {
   static mainWindow?: BrowserWindow
@@ -17,6 +17,8 @@ export class Main {
   static BrowserWindow: typeof BrowserWindow;
 
   private static onWindowAllClosed(): void { }
+
+  private static logger: Logger = container.resolve(Logger)
 
   private static onReady(): void {
     bootstrap()
@@ -52,13 +54,9 @@ export class Main {
   private static handleError(error: Error): void {
     let code = ErrorCode.SYSTEM_ERROR 
 
-    process.stdout.write(`An unexpected error occurred, we would present you some logs but we do not have yet. ${EOL}`)
-
     // log error message
     if (error instanceof AbstractException) {
-      process.stdout.write(`Error: ${error.message}  ${EOL}`)
-      process.stdout.write(`Code: ${error.code}  ${EOL}`)
-      process.stdout.write(`Cause: ${JSON.stringify(error.cause, null, 2)}  ${EOL}`)
+      this.logger.error(`Error Starting Electron Application:`, error)
       code = error.code
     }
 

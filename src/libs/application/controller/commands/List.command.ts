@@ -1,8 +1,8 @@
 import { ApplicationEntity } from "@electrodesk/types/application";
 import { container } from "tsyringe";
-import { command } from "../../../core/decorators";
-import { AbstractTask } from "../../../core/queue";
-import { ApplicationRegistry } from "../domain/repository/Application.registry";
+import { command } from "../../../../core/decorators";
+import { AbstractTask } from "../../../../core/queue";
+import { ApplicationRegistry } from "../../domain/repository/Application.registry";
 
 /**
  * loads all available applications from application repository. The path should be defined
