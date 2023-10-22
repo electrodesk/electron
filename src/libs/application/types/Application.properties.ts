@@ -1,6 +1,7 @@
 import { ApplicationReadDTO } from "@electrodesk/types/application";
 import { BrowserWindow } from "electron";
 import type { Observable } from "rxjs";
+import { ApplicationListenerModel } from "../domain/model/Application.Listener.model";
 
 // Observable state changed
 export const enum ApplicationState {
@@ -14,6 +15,8 @@ export type ApplicationModelConstructor = new(browserWindow: BrowserWindow) => A
 export interface ApplicationModel extends ApplicationReadDTO {
 
   readonly browserWindow: BrowserWindow
+
+  readonly listeners: ApplicationListenerModel
 
   open(url: string): Promise<void>
 

@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { v4 as uuid } from "uuid";
 import { ApplicationLoadUrlException } from "../../exceptions";
 import { ApplicationState, type ApplicationModel } from "../../types/Application.properties";
+import { ApplicationListenerModel } from "./Application.Listener.model";
 
 export class Application implements ApplicationModel {
 
@@ -18,8 +19,16 @@ export class Application implements ApplicationModel {
 
   private readonly payload: unknown
 
+  /**
+   * @description channels which are opened by application, eigentlich sind hier
+   * nur empfaenger drinnen
+   * 
+   * eigentlich sind das ApplicationListeners
+   */
+  readonly listeners = new ApplicationListenerModel()
+
   get uuid(): string {
-    return this.applicationId;
+    return this.applicationId
   }
 
   get osProcessId(): number | undefined {
@@ -34,7 +43,7 @@ export class Application implements ApplicationModel {
     public readonly browserWindow: BrowserWindow,
     public readonly data: unknown,
     public readonly name: string
-  ) { }
+  ) {}
 
   getBrowserWindow(): BrowserWindow | undefined {
     return this.browserWindow;
@@ -60,10 +69,14 @@ export class Application implements ApplicationModel {
     }
   }
 
+  /**
+   * @description send message to application window
+   * @param channel - more like the event we want to execute
+   * @param payload - data which is send with the event
+   */
   send(channel: string, payload: unknown): void {
     this.browserWindow?.webContents.send(channel, payload);
   }
-
 
   getInitialData(): unknown {
     return this.initialData
