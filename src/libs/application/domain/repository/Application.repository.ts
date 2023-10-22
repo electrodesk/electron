@@ -1,5 +1,6 @@
 import {
   ApplicationDispatchEvent,
+  ApplicationClosedEvent,
   ApplicationReadDTO,
 } from "@electrodesk/types/application";
 import { filter, take } from "rxjs/operators";
@@ -68,15 +69,14 @@ export class ApplicationRepository {
    */
   private applicationClosed(application: ApplicationModel): void {
     this.applications.delete(application.uuid);
-    const closeEvent: ApplicationDispatchEvent = {
-      name: "application:dispatch",
+
+    const closeEvent: ApplicationDispatchEvent<ApplicationClosedEvent> = {
+      name: "application:dispatch", // electron channel
+      broadcast: true,
       payload: {
-        event: "application:closed",
-        broadcast: true,
-        data: {
-          id: application.uuid,
-          application: application.name,
-        },
+        name: "application:closed", // event which is send to application
+        sender: 'APPLICATION',
+        senderId: application.uuid,
       },
     };
     this.eventController.dispatchEvent(closeEvent);

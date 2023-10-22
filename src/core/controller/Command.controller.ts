@@ -1,10 +1,16 @@
-import { Command, CommandResponse } from "@electrodesk/types";
+import {
+  Command,
+  CommandResponse,
+  CommandErrorResponse,
+} from "@electrodesk/types";
 import { IpcMainInvokeEvent, ipcMain } from "electron";
 import { lastValueFrom } from "rxjs";
 import { map } from "rxjs/operators";
 import { singleton } from "tsyringe";
 import { CommandRegistry } from "../domain/registry/Command.registry";
 import { AbstractTask, ITaskResponse, Queue, TaskState } from "../queue";
+import { Logger } from "../services";
+import { AbstractException } from "../exceptions/Abstract.Exception";
 
 export interface ITask {
   execute(): void;
@@ -18,20 +24,52 @@ export class CommandController {
    */
   private queueMap: Map<string, Queue<AbstractTask>> = new Map();
 
-  constructor(private readonly commandRegistry: CommandRegistry) {
+  constructor(
+    private readonly commandRegistry: CommandRegistry,
+    private readonly logger: Logger
+  ) {
+    this.registerForCommandExecEvent();
+  }
+
+  public exec(command: Command): Promise<CommandResponse> {
+    return this.executeCommand(command);
+  }
+
+  /**
+   * @description registers and execute electron renderer event command:exec
+   */
+  private registerForCommandExecEvent(): void {
     ipcMain.handle(
       "command:exec",
       (event: IpcMainInvokeEvent, command: Command) => {
         if (!command.command) {
           throw new Error(`No command defined`);
         }
-        return this.executeCommand(command, event.sender.getOSProcessId());
+
+        return this.executeCommand(
+          command,
+          event.sender.getOSProcessId()
+        ).catch((error: unknown) => this.createErrorResponse(error));
       }
     );
   }
 
-  public exec(command: Command): Promise<CommandResponse> {
-    return this.executeCommand(command);
+  /**
+   * @description create error response if called from renderer @see registerForCommandExecEvent
+   */
+  private createErrorResponse(error: unknown): CommandErrorResponse {
+    this.logger.error("CommandController electron renderer event command exec:", error as Error);
+    if (error instanceof AbstractException) {
+      return {
+        code: error.code,
+        error,
+      };
+    }
+
+    return {
+      code: 500,
+      error: error as Error,
+    };
   }
 
   /**

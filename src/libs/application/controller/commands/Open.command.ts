@@ -1,13 +1,13 @@
 import { ApplicationEntity, ApplicationReadDTO, OpenCommandParam } from "@electrodesk/types/application"
 import { container } from "tsyringe"
-import { command } from "../../../core/decorators"
-import { AbstractTask } from "../../../core/queue"
-import { WindowBuilder } from "../../../core/services"
-import { Application } from "../domain/model/Application.model"
-import { ApplicationRegistry } from "../domain/repository/Application.registry"
-import { ApplicationRepository } from "../domain/repository/Application.repository"
-import { ApplicationAllReadyRunningException, ApplicationNotFoundException } from "../exceptions"
-import type { ApplicationModel } from "../types/Application.properties"
+import { command } from "../../../../core/decorators"
+import { AbstractTask } from "../../../../core/queue"
+import { WindowBuilder } from "../../../../core/services"
+import { Application } from "../../domain/model/Application.model"
+import { ApplicationRegistry } from "../../domain/repository/Application.registry"
+import { ApplicationRepository } from "../../domain/repository/Application.repository"
+import { ApplicationAllReadyRunningException, ApplicationNotFoundException } from "../../exceptions"
+import type { ApplicationModel } from "../../types/Application.properties"
 
 @command({
   path: 'application:open',

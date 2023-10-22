@@ -1,9 +1,9 @@
 import { ApplicationRegisterListenerCommandParam } from "@electrodesk/types/application";
 import { container } from "tsyringe";
-import { command } from "../../../core/decorators";
-import { AbstractTask } from "../../../core/queue";
-import { ApplicationRepository } from "../domain/repository/Application.repository";
-import { ApplicationNotFoundException } from "../exceptions";
+import { command } from "../../../../core/decorators";
+import { AbstractTask } from "../../../../core/queue";
+import { ApplicationRepository } from "../../domain/repository/Application.repository";
+import { ApplicationNotFoundException } from "../../exceptions";
 
 /**
  * @description register listener to running application

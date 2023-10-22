@@ -16,7 +16,7 @@ export class EventController {
   dispatchEvent(event: ElectronEvent, osProcessId?: number): void {
     const handlers = this.eventRegistry.resolveHandler(event.name)
     for (const handler of handlers) {
-      handler.handleEvent(event.payload, osProcessId);
+      handler.handleEvent(event, osProcessId);
     }
   }
 }
