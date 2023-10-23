@@ -12,6 +12,9 @@ export class WindowBuilder {
     },
     show: false,
     title: 'Application',
+    minimizable: true,
+    maximizable: true,
+    closable: true
   };
 
   withDimension(width: number, height: number) {
@@ -71,6 +74,30 @@ export class WindowBuilder {
     this.options = {
       ...this.options,
       parent
+    }
+    return this
+  }
+
+  withClosable(closable: boolean): this {
+    this.options = {
+      ...this.options,
+      closable
+    }
+    return this
+  }
+
+  withMinimizable(minimizable: boolean | undefined): this {
+    this.options = {
+      ...this.options,
+      minimizable
+    }
+    return this
+  }
+
+  withMaximizable(maximizable: boolean | undefined): this {
+    this.options = {
+      ...this.options,
+      maximizable
     }
     return this
   }
