@@ -31,7 +31,7 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
-    "@electrodesk/types": "^0.0.14",
+    "@electrodesk/types": "^0.0.19",
     "@types/uuid": "9.0.6",
     "@typescript-eslint/eslint-plugin": "6.8.0",
     "@typescript-eslint/parser": "6.8.0",
